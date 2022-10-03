@@ -6,17 +6,15 @@ async function main() {
   const uri = Date.now().toString();
   console.log({ uri });
 
-  await prisma.campaign.create({
-    data: {
-      uri,
-    },
-  });
+  // await prisma.campaign.create({
+  //   data: {
+  //     uri,
+  //   },
+  // });
 
   await prisma.campaignFunder.create({
     data: {
-      address: `${uri}-address`,
-      value: 0,
-      campaign: { connect: { uri } },
+      id: `${uri}`,
       events: {
         create: {
           hash: `${uri}-funder`,
@@ -28,15 +26,12 @@ async function main() {
 
   const res = await prisma.campaignFunder.findMany({
     where: {
-      campaign: { uri },
+      id: `${uri}`,
     },
     orderBy: {
       events: {
         blockNumber: 'desc',
       },
-    },
-    include: {
-      events: true,
     },
   });
 
