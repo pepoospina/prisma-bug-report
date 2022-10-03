@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = "postgresql://postgres:postgres@localhost:5442/test?schema=public "
+}
+
+model Campaign {
+  uri             String    @id
+  funders         CampaignFunder[]
+  fundEvents      FundEvent[]
+}
+
+model CampaignFunder {
+  id              String        @id
+  campaign        Campaign      @relation(fields: [campaignId], references: [uri])
+  campaignId      String
+  address         String
+  value           Float         // estimated dolar value of the funder contributions.
+  events          FundEvent[]
+}
+
+model FundEvent {
+  hash            String          @id
+  campaign        Campaign        @relation(fields: [campaignId], references: [uri])
+  campaignId      String
+  funder          CampaignFunder  @relation(fields: [funderId], references: [id])
+  funderId        String
+  blockNumber     Int
+}
